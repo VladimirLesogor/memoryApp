@@ -1,0 +1,10 @@
+.playCard{
+    height: 100px;
+    width: 100px;
+    background-color: lightgray;
+    border: 1px solid gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+}
