@@ -6,3 +6,7 @@
   justify-content: center;
   position: relative;
 }
+.score{
+    font-size: 25px;
+    color: blueviolet;
+}

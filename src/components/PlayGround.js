@@ -7,7 +7,8 @@ import OnStartTimer from './OnStartTimer';
 
 function PlayGround() {
   class card {
-    constructor(playValue) {
+    constructor(playValue, index) {
+      this.index = index;
       this.playValue = playValue;
       this.isComplited = false;
       this.isVisable = true;
@@ -16,26 +17,69 @@ function PlayGround() {
 
   let startArr = [];
   if (!startArr.length) {
+    let index = 0;
     while (startArr.length < 12) {
       let randNum = randomNumber(100);
-      startArr.push(new card(randNum));
-      startArr.push(new card(randNum));
+
+      startArr.push(new card(randNum, index));
+      index++;
+      startArr.push(new card(randNum, index));
+      index++;
     }
-      startArr = shuffleArrey(startArr);
-      
+    startArr = shuffleArrey(startArr);
   }
   const [cards, setCards] = useState(startArr);
+  const [showedCounter, setShowedCounter] = useState(0);
+  const [score, setScore] = useState(0);
 
   function hideCradsHandler() {
     let hidedCards = cards.map((card) => {
-      card.isVisable = false;
+      if (!card.isComplited) card.isVisable = false;
       return card;
     });
     setCards(hidedCards);
   }
 
+  function showCard(index) {
+    if (showedCounter < 2) {
+      setCards(
+        cards.map((card) => {
+          if (card.index === index) card.isVisable = true;
+          return card;
+        })
+      );
+      setShowedCounter(showedCounter + 1);
+    }
+  }
+
+  useEffect(() => {
+    if (showedCounter > 1) {
+      const openedCards = cards.filter((card) => {
+        return card.isVisable && !card.isComplited ? 1 : 0;
+      });
+      if (openedCards[0].playValue === openedCards[1].playValue) {
+        const tempCards = cards.map((card) => {
+          if (
+            card.index === openedCards[0].index ||
+            card.index === openedCards[1].index
+          ) {
+            card.isComplited = true;
+          }
+          return card;
+        });
+        setCards(tempCards);
+        setShowedCounter(0);
+        setScore(score + 5);
+      } else {
+        setTimeout(() => {
+          hideCradsHandler();
+          setShowedCounter(0);
+        }, 1000);
+      }
+    }
+  }, [showedCounter]);
+
   const [startTimeLeft, setStartTimeLeft] = useState(3);
-  const [isGameStarted, setIsGameStarted] = useState(false);
 
   useEffect(() => {
     if (startTimeLeft) {
@@ -44,25 +88,28 @@ function PlayGround() {
       }, 1000);
     } else {
       hideCradsHandler();
-      setIsGameStarted(true);
     }
   }, [startTimeLeft]);
 
   return (
-    <div className={style.easyLevel}>
-      {cards.map((card, index) => {
-        return (
-          <PlayCard
-            index={index}
-            key={index}
-            playValue={card.playValue}
-            isVisable={card.isVisable}
-            isComplited={card.isComplited}
-          />
-        );
-      })}
-      <OnStartTimer timeLeft={startTimeLeft} />
-    </div>
+    <>
+      <div className={style.easyLevel}>
+        {cards.map((card) => {
+          return (
+            <PlayCard
+              index={card.index}
+              key={card.index}
+              playValue={card.playValue}
+              isVisable={card.isVisable}
+              isComplited={card.isComplited}
+              showCard={showCard}
+            />
+          );
+        })}
+        <OnStartTimer timeLeft={startTimeLeft} />
+      </div>
+      <div className={style.score}>Score: {score}</div>
+    </>
   );
 }
 
