@@ -1,0 +1,7 @@
+.timer {
+  position: absolute;
+  top: calc(50% - 85px);
+  left: calc(50% - 40px);
+  font-size: 150px;
+  line-height: 150px;
+}

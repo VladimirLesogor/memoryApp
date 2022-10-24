@@ -3,7 +3,8 @@ import { useState } from 'react';
 function MainMenu() {
   const [difficalty, setDifficalty] = useState('easy');
   const newGameHandler = (event) => {
-    event.preventDefault();
+      event.preventDefault();
+
   };
   const changeDifficaltyHandler = (event) => {
     setDifficalty(event.target.value);
