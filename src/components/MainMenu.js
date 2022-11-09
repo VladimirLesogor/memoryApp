@@ -1,9 +1,10 @@
 import { useState } from 'react';
 
-function MainMenu() {
+function MainMenu({startGame}) {
   const [difficalty, setDifficalty] = useState('easy');
   const newGameHandler = (event) => {
       event.preventDefault();
+      startGame(difficalty);
 
   };
   const changeDifficaltyHandler = (event) => {

@@ -1,4 +1,4 @@
-.playCard{
+.playCard_easy{
     height: 100px;
     width: 100px;
     background-color: lightgray;
@@ -10,10 +10,58 @@
     cursor: pointer;
     
 }
-.copmlitedCard{
+.playCardComplited_easy{
     height: 100px;
     width: 100px;
     background-color: lightgreen;
+    border: 1px solid gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    cursor: default;
+
+}
+.playCard_medium{
+    height: 100px;
+    width: 100px;
+    background-color: rgb(255, 181, 181);
+    border: 1px solid gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    cursor: pointer;
+    
+}
+.playCardComplited_medium{
+    height: 100px;
+    width: 100px;
+    background-color: rgb(107, 245, 107);
+    border: 1px solid gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    cursor: default;
+
+}
+.playCard_hard{
+    height: 100px;
+    width: 100px;
+    background-color: rgb(255, 92, 92);
+    border: 1px solid gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    cursor: pointer;
+    
+}
+.playCardComplited_hard{
+    height: 100px;
+    width: 100px;
+    background-color: rgb(92, 255, 92);
     border: 1px solid gray;
     display: flex;
     justify-content: center;

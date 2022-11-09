@@ -1,64 +1,47 @@
 import { useEffect, useState } from 'react';
-import randomNumber from '../utils/randomNumber';
-import shuffleArrey from '../utils/shuffleArrey';
 import style from './PlayGround.module.css';
+import MainMenu from './MainMenu';
 import PlayCard from './PlayCard';
 import OnStartTimer from './OnStartTimer';
+import Cards from '../utils/Cards';
 
-function PlayGround() {
-  class card {
-    constructor(playValue, index) {
-      this.index = index;
-      this.playValue = playValue;
-      this.isComplited = false;
-      this.isVisable = true;
-    }
-  }
+function PlayGround({ words }) {
+  const [cards, setCards] = useState(new Cards(0, 0, 'easy'));
 
-  let startArr = [];
-  if (!startArr.length) {
-    let index = 0;
-    while (startArr.length < 12) {
-      let randNum = randomNumber(100);
-
-      startArr.push(new card(randNum, index));
-      index++;
-      startArr.push(new card(randNum, index));
-      index++;
-    }
-    startArr = shuffleArrey(startArr);
-  }
-  const [cards, setCards] = useState(startArr);
-  const [showedCounter, setShowedCounter] = useState(0);
   const [score, setScore] = useState(0);
 
+  function startGameHandler(difficalty) {
+    let difficaltyTable = {
+      easy: 4,
+      medium: 6,
+      hard: 9,
+    };
+
+    setStartTimeLeft(difficaltyTable[difficalty]);
+    setCards(new Cards(0, 0, difficalty));
+  }
+
   function hideCradsHandler() {
-    let hidedCards = cards.map((card) => {
-      if (!card.isComplited) card.isVisable = false;
-      return card;
+    setCards((prevCards) => {
+      return prevCards.hideCrads();
     });
-    setCards(hidedCards);
   }
 
   function showCard(index) {
-    if (showedCounter < 2) {
-      setCards(
-        cards.map((card) => {
-          if (card.index === index) card.isVisable = true;
-          return card;
-        })
-      );
-      setShowedCounter(showedCounter + 1);
+    if (cards.showedCardsCounter < 2) {
+      setCards((prevCards) => {
+        return prevCards.showCard(index);
+      });
     }
   }
 
   useEffect(() => {
-    if (showedCounter > 1) {
-      const openedCards = cards.filter((card) => {
+    if (cards.showedCardsCounter > 1) {
+      const openedCards = cards.cardsArr.filter((card) => {
         return card.isVisable && !card.isComplited ? 1 : 0;
       });
       if (openedCards[0].playValue === openedCards[1].playValue) {
-        const tempCards = cards.map((card) => {
+        const tempCards = cards.cardsArr.map((card) => {
           if (
             card.index === openedCards[0].index ||
             card.index === openedCards[1].index
@@ -67,25 +50,25 @@ function PlayGround() {
           }
           return card;
         });
-        setCards(tempCards);
-        setShowedCounter(0);
-        setScore(score + 5);
+        setCards(new Cards(tempCards, 0, cards.difficalty));
+
+        setScore((s) => s + 5);
       } else {
         setTimeout(() => {
           hideCradsHandler();
-          setShowedCounter(0);
         }, 1000);
       }
     }
-  }, [showedCounter]);
+  }, [cards.showedCardsCounter]);
 
   const [startTimeLeft, setStartTimeLeft] = useState(3);
 
   useEffect(() => {
     if (startTimeLeft) {
-      setTimeout(() => {
+      let timerID = setTimeout(() => {
         setStartTimeLeft(startTimeLeft - 1);
       }, 1000);
+      return () => clearTimeout(timerID);
     } else {
       hideCradsHandler();
     }
@@ -93,11 +76,14 @@ function PlayGround() {
 
   return (
     <>
-      <div className={style.easyLevel}>
-        {cards.map((card) => {
+      <MainMenu startGame={startGameHandler} />
+      <div className={style[cards.difficalty]}>
+        {cards.cardsArr.map((card) => {
           return (
             <PlayCard
+              difficalty={cards.difficalty}
               index={card.index}
+              word={words[card.playValue]}
               key={card.index}
               playValue={card.playValue}
               isVisable={card.isVisable}
